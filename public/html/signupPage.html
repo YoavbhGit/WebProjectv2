@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Movie Picker" />
+		<meta name="keywords" content="HTML, CSS, JavaScript" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="../css/loginCSS.css" />
+		<script src="../js/functions.js"></script>
+	</head>
+	<body class="align">
+		<div class="grid align__item">
+			<div class="register">
+				<h2>Sign Up</h2>
+				<div>
+					<p id="error"></p>
+				</div>
+				<form action="/signup" method="POST" class="form" id="login_Form">
+					<div class="form__field">
+						<input type="text" class="form__input" id="username" name="username" placeholder="Username" required="yes" />
+					</div>
+
+					<div class="form__field">
+						<input type="password" class="form__input" id="password" name="password" placeholder="••••••••••••" required />
+					</div>
+
+					<div class="form__field">
+						<input type="submit" class="form__input" id="submitButton" value="Sign Up" />
+					</div>
+
+					<div class="log_in">
+						<p>Already have an accout? <a href="#" id="loginButton" onclick="loadPage(this.id)">Log in</a></p>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="signin_background"></div>
+		<script>
+			document.getElementById('submitButton').addEventListener('click', () => {
+				// get al fields
+				const username = document.getElementById('username').innerText
+				fetch('/signup', {
+					method: 'POST',
+					body: JSON.stringify({
+						username,
+						password,
+					}),
+				}).then((res) => {
+					if (res.error) {
+						// change html
+					}
+				})
+			})
+		</script>
+	</body>
+</html>
