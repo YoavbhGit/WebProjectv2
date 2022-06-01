@@ -21,7 +21,7 @@ async function connectDB (){
 	return await dbo;
 }
 
-//Generic function for DB disconnection
+//Generic function for DB disconnect
 async function disconnectDB (){
 	
 	try{
@@ -54,6 +54,7 @@ const createUser = async function (username, password) {
 				return
 			}
 		})
+		// Add the user if doesn't exist
 		if(!exist){
 			const result = await collectionUsers.insertOne(myobj)
 			console.log(`User: ${username} added`)
@@ -69,7 +70,7 @@ const createUser = async function (username, password) {
 	}
 }
 
-module.exports = { createUser, disconnectDB }
+module.exports = { createUser }
 
 
 //############################### Print DB as JSON ##########################
