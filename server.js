@@ -8,25 +8,28 @@ const flash = require('express-flash')
 const session = require('express-session')
 app.use(
 	bodyParser.urlencoded({
-		extended: false,
+	extended: false,
 	})
 )
 app.use(bodyParser.json())
+
 const PORT = process.env.PORT || 3000
 var dbName = process.env.MONGO_DB_NAME
+
 const passport = require('passport')
 var MongoDB = require('./public/js/db')
-var fetchPage = require('./public/js/functions')
+const initializePassport = require('./public/js/passport_config')
+
 var mydbb = async () => {
-	const result = await MongoDB.getDB()
+	var myobj = { username: "222131", password: "237" };
+	const result = await MongoDB.createUser(myobj.username,myobj.password)
 	return result
   }
   (async () => {
-	console.log(await (await mydbb()).collection('Users'))  
+	await mydbb()
 })()
 
-//MongoDB.createUser("yoab", "123",mydbb)
-const initializePassport = require('./public/js/passport_config')
+
 
 initializePassport(passport)
 

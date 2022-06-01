@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 dotenv.config({ path: './public/config/config.env'})
 var dbName =  process.env.MONGO_DB_NAME;
 var MongoDB = require( './db');
+
 function initialize(passport) {
     console.log("Here 1")
 
