@@ -17,7 +17,15 @@ var dbName = process.env.MONGO_DB_NAME
 const passport = require('passport')
 var MongoDB = require('./public/js/db')
 var fetchPage = require('./public/js/functions')
+var mydbb = async () => {
+	const result = await MongoDB.getDB()
+	return result
+  }
+  (async () => {
+	console.log(await (await mydbb()).collection('Users'))  
+})()
 
+//MongoDB.createUser("yoab", "123",mydbb)
 const initializePassport = require('./public/js/passport_config')
 
 initializePassport(passport)

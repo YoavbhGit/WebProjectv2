@@ -5,52 +5,55 @@ dotenv.config({ path: './public/config/config.env' })
 const url = process.env.MONGO_URI
 // Database Name
 const dbName = process.env.MONGO_DB_NAME
-const uri = 'mongodb://127.0.0.1:27017/myimdb'
-const MongoClient = require('mongodb').MongoClient
-var _db = null
+const uri = 'mongodb://localhost:27017' //myimdb'
+const { MongoClient } = require('mongodb') //.MongoClient
+var database = null
 
 const { MONGO_URI, MONGO_DB_NAME } = process.env
 
-const connectDB = async () => {
-	try {
-		MongoClient.connect(uri, (err, db) => {
-			if (err) {
-				console.error('ERROR: 2134213213', err)
-				process.exit(1)
-			}
-			return db
-		})
-	} catch (e) {
-		throw e
+// const connectDB = async () => {
+// 	console.log("@@@@@@@@@@@@@@@@@@@")
+// 	try {
+// 		MongoClient.connect(uri, (err, db) => {
+// 			if (err) {
+// 				console.error('ERROR: 2134213213', err)
+// 				process.exit(1)
+// 			}
+// 			console.log("Connected to DB successfully")
+// 			return db
+// 		})
+// 	} catch (e) {
+// 		console.error('ERROR: 9999999', err)
+// 		throw e
+// 	}
+// }
+
+const client = new MongoClient(uri);
+const getDB = async function run() {
+  try {
+    await client.connect();
+    const database = client.db('myimdb');
+	if (!database) {
+		console.error(`DB Not Found!`)
+		process.exit(2)
 	}
-}
-
-// initialize db object if not exists and return it
-const getDB = async () => {
-	if (!_db) {
-		_db = await connectDB()
-
-		if (!_db) {
-			console.error(`DB Not Found`)
-			process.exit(2)
-		}
-	}
-
-	return _db
+    console.log("Connected Successfully to DB!");
+	return await database;
+  }catch (e){
+	  console.log('Connection to DB Failed')
+	  throw e
+  } 
 }
 
 const disconnectDB = () => {
-	_db.close()
+	database.close()
 }
 
-;(async function () {
-	_db = await getDB()
-})()
-
-const createUser = async (username, password) => {
+async function createUser(username, password, database) {
 	const user = { username: username, password: password }
-	_db.collection('users').insertOne(user, (err, res) => {
-		if (err) return false
+	database.collection('Users').insertOne(user, (err, res) => {
+		if (err)
+			return false
 
 		console.log('1 user inserted: ' + res)
 		return true
