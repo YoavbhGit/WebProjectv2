@@ -1,38 +1,24 @@
-const express = require('express')
-const app = express()
-app.use(express.static('public'))
 const dotenv = require('dotenv')
 dotenv.config({ path: './public/config/config.env' })
+
+const express = require('express')
 const bodyParser = require('body-parser')
 const flash = require('express-flash')
 const session = require('express-session')
+const passport = require('passport')
+const MongoDB = require('./public/js/db')
+const initializePassport = require('./public/js/passport_config')
+
+
+const app = express()
+app.use(express.static('public'))
+app.use(bodyParser.json())
+const PORT = process.env.PORT || 3000
 app.use(
 	bodyParser.urlencoded({
 	extended: false,
 	})
 )
-app.use(bodyParser.json())
-
-const PORT = process.env.PORT || 3000
-var dbName = process.env.MONGO_DB_NAME
-
-const passport = require('passport')
-var MongoDB = require('./public/js/db')
-const initializePassport = require('./public/js/passport_config')
-
-var mydbb = async () => {
-	var myobj = { username: "222131", password: "237" };
-	const result = await MongoDB.createUser(myobj.username,myobj.password)
-	return result
-  }
-  (async () => {
-	await mydbb()
-})()
-
-
-
-initializePassport(passport)
-
 app.use(flash())
 app.use(
 	session({
@@ -43,14 +29,24 @@ app.use(
 )
 app.use(passport.initialize())
 app.use(passport.session())
+//Server Listens on port 3000
+app.listen(PORT, () => {console.log(`Server running in ${process.env.NODE_ENV} mode on http://localhost:${PORT}`)})
 
-app.listen(PORT, () => {
-	console.log(`Server running in ${process.env.NODE_ENV} mode on http://localhost:${PORT}`)
-})
+
+
+initializePassport(passport)
+
+
+
+
 
 // ------------------------------------------------------------------------
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/public/html/index.html')
+	res.sendFile(__dirname + '/public/html/login_register.html')
+	//res.render('/public/html/login_register.html', {ae: 'heloooo'})
+})
+app.get('/signupPage.html', (req, res) => {
+	res.sendFile(__dirname + '/public/html/signupPage.html')
 })
 
 app.post('/signup', async (req, res) => {
@@ -64,28 +60,11 @@ app.post('/signup', async (req, res) => {
 		var password = req.body.password
 		console.log('username:', username)
 		console.log('password:', password)
-
-		const userCreated = await MongoDB.createUser(username, password)
-
-		if (userCreated) {
-			console.log(`User ${username} Created!`)
-		} else {
-			console.error(`ERROR: User ${username} Creation Failed`)
-		}
-
-		// MongoDB.connectDB(async (err) => {
-		// 	if (err) throw err
-
-		// 	var db = MongoDB.getDB()
-		// 	db = db.db(dbName)
-		// 	var user = { username: username, password: password }
-		// 	db.collection('users').insertOne(user, function (err, res) {
-		// 		if (err) throw err
-		// 		console.log('1 user inserted: ' + username)
-
-		// 		MongoDB.disconnectDB()
-		// 	})
-		// })
+		(async () => {
+			var myobj = { username: "222131", password: "237" };
+			const result = await MongoDB.createUser(myobj.username,myobj.password)
+			return result
+		  })()
 	} catch (e) {
 		throw e
 	}

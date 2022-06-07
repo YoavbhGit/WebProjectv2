@@ -1,18 +1,14 @@
 const dotenv = require('dotenv')
 dotenv.config({ path: './public/config/config.env' })
+const { MONGO_DB_NAME, MONGO_URL_CON_DB } = process.env
 const { MongoClient } = require('mongodb')
-const { MONGO_DB_NAME, MONGO_CON_DB } = process.env
-// Connection URL
-const url = MONGO_CON_DB
-// Database Name
-var database = null
-const client = new MongoClient(url)
+const client = new MongoClient(MONGO_URL_CON_DB)
 
 //Generic function for DB connection
 async function connectDB (){
 	console.log("Connecting to DB...")
 	await client.connect()
-	var dbo = client.db('myimdb')
+	var dbo = client.db(MONGO_DB_NAME)
 	if (!dbo) {
 		console.error(`DB Not Found! Failed to Connect`)
 		process.exit(2)
@@ -34,6 +30,9 @@ async function disconnectDB (){
 	}
 }
 
+//----------------------------------------
+//-------------- DB Actions --------------
+//----------------------------------------
 //Add a user to the Database
 const createUser = async function (username, password) {
 	console.log("Trying to add a user...")
@@ -72,22 +71,3 @@ const createUser = async function (username, password) {
 
 module.exports = { createUser }
 
-
-//############################### Print DB as JSON ##########################
-// const getCircularReplacer = () => {
-//     const seen = new WeakSet();
-//     return (key, value) => {
-//       if (typeof value === 'object' && value !== null) {
-//         if (seen.has(value)) {
-//           return;
-//         }
-//         seen.add(value);
-//       }
-//       return value;
-//     };
-//   };
-
-//   database.name = database;
-
-//   const result = JSON.stringify(database, getCircularReplacer());
-//   console.log(result);

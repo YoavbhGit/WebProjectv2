@@ -29,28 +29,11 @@
 					</div>
 
 					<div class="log_in">
-						<p>Already have an accout? <a href="#" id="loginButton" onclick="loadPage(this.id)">Log in</a></p>
+						<p>Already have an accout? <a href="./">Log in</a></p>
 					</div>
 				</form>
 			</div>
 		</div>
 		<div class="signin_background"></div>
-		<script>
-			document.getElementById('submitButton').addEventListener('click', () => {
-				// get al fields
-				const username = document.getElementById('username').innerText
-				fetch('/signup', {
-					method: 'POST',
-					body: JSON.stringify({
-						username,
-						password,
-					}),
-				}).then((res) => {
-					if (res.error) {
-						// change html
-					}
-				})
-			})
-		</script>
 	</body>
 </html>

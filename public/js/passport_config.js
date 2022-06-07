@@ -46,7 +46,9 @@ function initialize(passport) {
   
   console.log("Here 8")
   passport.use(new LocalStrategy({ usernameField: 'username' }, authenticateUser))
+  //In serialize user we decide what to store in the session. Here we're storing the user id only.
   passport.serializeUser((isUser, done) => done(null, isUser.id))
+  //Here we retrieve all the info of the user from the session using the user id stored in the session earlier using serialize user.
   passport.deserializeUser((id,done) => {
     return done(null, isUser.username)
   })
