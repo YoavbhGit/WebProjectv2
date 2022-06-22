@@ -76,13 +76,13 @@ function isLoggedOut(req, res, next) {
 	res.render('homePage.html');
 }
 
-app.use('/homepage', function(req, res, next){
+app.use('/userMovies', function(req, res, next){
     
     var options = {
         root: path.join(__dirname)
     };
      
-    var fileName = '/public/html/userInfo.html'
+    var fileName = '/public/html/userMovies.html'
     res.sendFile(fileName, options, function (err) {
         if (err) {
             next(err)
@@ -95,7 +95,6 @@ app.use('/homepage', function(req, res, next){
 
 // ROUTES
 app.get('/', isLoggedIn, (req, res) => {
-
 	res.render('homePage.html');
 });
 
@@ -103,42 +102,40 @@ app.get('/login', isLoggedOut, (req, res) => {
 	res.render('login');
 });
 
-app.get('/about', (req, res) => {
+app.get('/about', isLoggedIn, (req, res) => {
 	res.render('/index.html');
 });
-app.get('/loadingPage', (req, res) => {
-	// let sessionId = res.socket.parser.incoming.sessionID
-	// console.log(sessionId)
-	// let sessionInfo = res.socket.parser.incoming.sessionStore.sessions[sessionId]
-	// console.log(sessionInfo)
-	// let passportUserInfo = JSON.parse(sessionInfo).passport
-	// console.log(passportUserInfo)
-	res.render('loadingPage.html')
-
-	const content = `<div class="home">
-	<h1>k </h1>
-	<a href="/logout">aaaaaaaa</a>
-	</div>`
-	fs.writeFile(__dirname + '/public/html/userInfo.html', content, err => {
+app.get('/successfulLogin', isLoggedIn, (req, res) => {
+	let sessionId = res.socket.parser.incoming.sessionID
+	//console.log(sessionId)
+	let sessionInfo = res.socket.parser.incoming.sessionStore.sessions[sessionId]
+	//console.log(sessionInfo)
+	let passportUserInfo = JSON.parse(sessionInfo).passport.user
+	console.log(passportUserInfo.movies)
+	let list = ''
+	passportUserInfo.movies.forEach(movie => {
+		list += `<li>${movie}</li>\n`
+	});
+	const content = `<h1>${passportUserInfo.username}'s Movies </h1>
+	${list}`
+	fs.writeFile(__dirname + '/public/html/userMovies.html', content, err => {
 		if (err) {
 			console.error(err);
 		}
 	});
+	res.render('successfulLogin.html')
 //	res.render('homePage.html', JSON.stringify(passportUserInfo))
 	//res.render('homePage.html')
-    res.send();
-
-
 });
 
-app.get('/homepage', (req, res) => {
+app.get('/homepage',isLoggedIn, (req, res) => {
 	res.render('homePage.html')
 });
 
 
 
 app.post('/login', passport.authenticate('local', {
-	successRedirect: 'loadingPage',
+	successRedirect: 'successfulLogin',
 	failureRedirect: 'login?error=true',
 }));
 

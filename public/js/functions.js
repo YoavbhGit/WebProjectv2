@@ -2,10 +2,10 @@ function loadPage(clicked_id) {
 	let fetchStr = '../html/'
 	if (clicked_id == 'homeButton') {
 		fetchStr += 'homePage.html'
-	} else if (clicked_id == 'loginButton') {
-		fetchStr += 'loginPage.html'
-	} else if (clicked_id == 'signupButton') {
-		fetchStr += 'signupPage.html'
+	} else if (clicked_id == 'MyMovies') {
+		fetchStr += 'userMovies.html'
+	} else if (clicked_id == 'AllMovies') {
+		fetchStr += 'allMovies.html'
 	}
 
 	fetch(fetchStr)
